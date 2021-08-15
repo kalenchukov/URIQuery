@@ -30,7 +30,7 @@ public class UriQuery
 	{
 		Map<String, List<String>> params = new LinkedHashMap<>();
 
-		if (uriQuery.length() > 0)
+		if (uriQuery != null && uriQuery.length() > 0)
 		{
 			for (String groupParam : uriQuery.split("&"))
 			{

@@ -7,11 +7,9 @@
 package dev.kalenchukov.uriquery;
 
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,17 +20,17 @@ public final class UriQuery
 	/**
 	 * Разбирает параметры URI
 	 *
-	 * @param uriQuery параметры URI в одну строку
+	 * @param uriQueryEncode закодированные параметры URI в одну строку
 	 * @return карту параметров и их значений
-	 * @throws IllegalArgumentException если переданы некорректные параметры URI
+	 * @throws IllegalArgumentException если переданы некорректный формат параметров URI
 	 */
-	public static Map<String, List<String>> parse(String uriQuery) throws IllegalArgumentException
+	public static Map<String, List<String>> parse(String uriQueryEncode) throws IllegalArgumentException
 	{
 		Map<String, List<String>> params = new LinkedHashMap<>();
 
-		if (uriQuery != null && uriQuery.length() > 0)
+		if (uriQueryEncode != null && uriQueryEncode.length() > 0)
 		{
-			for (String groupParam : uriQuery.split("&"))
+			for (String groupParam : uriQueryEncode.split("&"))
 			{
 				Pattern pattern = Pattern.compile("(?<key>.+(\\[\\])?)=(?<value>.*)", Pattern.CASE_INSENSITIVE);
 				Matcher matcher = pattern.matcher(groupParam);
@@ -42,7 +40,7 @@ public final class UriQuery
 					throw new IllegalArgumentException("Not correct query");
 				}
 
-				String keyGroup = matcher.group("key");
+				String keyGroup = URLDecoder.decode(matcher.group("key"), StandardCharsets.UTF_8);
 				String valueGroup = URLDecoder.decode(matcher.group("value"), StandardCharsets.UTF_8);
 
 				List<String> paramValues = new ArrayList<>();
@@ -69,7 +67,7 @@ public final class UriQuery
 	 * Собирает параметры URI
 	 *
 	 * @param params карта параметров и их значений
-	 * @return параметры URI в одну строку
+	 * @return закодированные параметры URI в одну строку
 	 */
 	public static String compose(Map<String, List<String>> params)
 	{
@@ -91,7 +89,7 @@ public final class UriQuery
 						uriQuery.append("&");
 					}
 
-					uriQuery.append(groupParam.getKey());
+					uriQuery.append(URLEncoder.encode(groupParam.getKey(), StandardCharsets.UTF_8));
 
 					if (groupParam.getValue().size() > 1)
 					{
@@ -99,7 +97,8 @@ public final class UriQuery
 					}
 
 					uriQuery.append("=");
-					uriQuery.append(groupParam.getValue().get(elm));
+
+					uriQuery.append(URLEncoder.encode(groupParam.getValue().get(elm), StandardCharsets.UTF_8));
 				}
 
 			needSeparator = true;

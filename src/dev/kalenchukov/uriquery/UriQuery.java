@@ -20,7 +20,7 @@ public final class UriQuery
 	/**
 	 * Разбирает параметры URI
 	 *
-	 * @param uriQueryEncode закодированные параметры URI в одну строку
+	 * @param uriQueryEncode закодированные параметры URI
 	 * @return карту параметров и их значений
 	 * @throws IllegalArgumentException если переданы некорректный формат параметров URI
 	 */
@@ -67,7 +67,7 @@ public final class UriQuery
 	 * Собирает параметры URI
 	 *
 	 * @param params карта параметров и их значений
-	 * @return закодированные параметры URI в одну строку
+	 * @return закодированные параметры URI
 	 */
 	public static String compose(Map<String, List<String>> params)
 	{

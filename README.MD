@@ -4,7 +4,6 @@
 # Использование
 ### Сборщик параметров
 ```java
-### Сборка параметров
 Map<String, List<String>> uriQueryMap = new LinkedHashMap<>(
     Map.ofEntries(
         Map.entry("param1", List.of("value1.1")),

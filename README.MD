@@ -14,7 +14,6 @@ Map<String, List<String>> uriQueryMap = new LinkedHashMap<>(
     )
 );
 
-// Вызов сборщика параметров
 UriQuery.compose(uriQueryMap);
 /*
     Результат выполнения:
@@ -31,7 +30,6 @@ String uriQueryLine =
 	"&param3[]=value3.2" +
 	"&param4=value4.1";
 
-// Вызов разборщика параметров
 UriQuery.parse(uriQueryLine);
 /*
     Результат выполнения:

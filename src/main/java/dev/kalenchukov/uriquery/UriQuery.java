@@ -12,6 +12,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class UriQuery
 {
@@ -22,45 +24,42 @@ public final class UriQuery
 	 *
 	 * @param uriQueryEncode закодированные параметры URI
 	 * @return карту параметров и их значений
-	 * @throws IllegalArgumentException если переданы некорректный формат параметров URI
 	 */
-	public static Map<String, List<String>> parse(String uriQueryEncode) throws IllegalArgumentException
+	public static @NotNull Map<String, List<String>> parse(@Nullable String uriQueryEncode)
 	{
-		Map<String, List<String>> params = new LinkedHashMap<>();
+		Map<String, List<String>> queryParams = new HashMap<>();
 
-		if (uriQueryEncode != null && uriQueryEncode.length() > 0)
+		if (uriQueryEncode == null || uriQueryEncode.length() < 3) {
+			return queryParams;
+		}
+
+		for (String groupParam : uriQueryEncode.split("&"))
 		{
-			for (String groupParam : uriQueryEncode.split("&"))
+			Pattern pattern = Pattern.compile("(?<param>[a-z0-9_\\-.+,|:]+(\\[\\])?)=(?<value>.*)", Pattern.CASE_INSENSITIVE);
+			Matcher matcher = pattern.matcher(groupParam);
+
+			if (matcher.matches())
 			{
-				Pattern pattern = Pattern.compile("(?<key>.+(\\[\\])?)=(?<value>.*)", Pattern.CASE_INSENSITIVE);
-				Matcher matcher = pattern.matcher(groupParam);
-
-				if (!matcher.matches())
-				{
-					throw new IllegalArgumentException("Not correct query");
-				}
-
-				String keyGroup = URLDecoder.decode(matcher.group("key"), StandardCharsets.UTF_8);
+				String paramGroup = matcher.group("param").toLowerCase();
 				String valueGroup = URLDecoder.decode(matcher.group("value"), StandardCharsets.UTF_8);
 
-				List<String> paramValues = new ArrayList<>();
+				List<String> queryParamValues = new ArrayList<>();
 
-				if (keyGroup.contains("[]"))
+				if (paramGroup.contains("[]"))
 				{
-					keyGroup = keyGroup.replace("[]", "");
+					paramGroup = paramGroup.replace("[]", "");
 
-					if (params.containsKey(keyGroup))
-					{
-						paramValues = params.get(keyGroup);
+					if (queryParams.containsKey(paramGroup)) {
+						queryParamValues = queryParams.get(paramGroup);
 					}
 				}
 
-				paramValues.add(valueGroup);
-				params.put(keyGroup, paramValues);
+				queryParamValues.add(valueGroup);
+				queryParams.put(paramGroup, queryParamValues);
 			}
 		}
 
-		return params;
+		return queryParams;
 	}
 
 	/**
@@ -69,7 +68,7 @@ public final class UriQuery
 	 * @param params карта параметров и их значений
 	 * @return закодированные параметры URI
 	 */
-	public static String compose(Map<String, List<String>> params)
+	public static @NotNull String compose(@NotNull Map<String, List<String>> params)
 	{
 		StringBuilder uriQuery = new StringBuilder();
 
@@ -77,27 +76,23 @@ public final class UriQuery
 
 		for (Map.Entry<String, List<String>> groupParam : params.entrySet())
 		{
-			if (needSeparator)
-			{
+			if (needSeparator) {
 				uriQuery.append("&");
 			}
 
 				for (int elm = 0; elm < groupParam.getValue().size(); elm++)
 				{
-					if (elm > 0)
-					{
+					if (elm > 0) {
 						uriQuery.append("&");
 					}
 
 					uriQuery.append(URLEncoder.encode(groupParam.getKey(), StandardCharsets.UTF_8));
 
-					if (groupParam.getValue().size() > 1)
-					{
+					if (groupParam.getValue().size() > 1) {
 						uriQuery.append("[]");
 					}
 
 					uriQuery.append("=");
-
 					uriQuery.append(URLEncoder.encode(groupParam.getValue().get(elm), StandardCharsets.UTF_8));
 				}
 

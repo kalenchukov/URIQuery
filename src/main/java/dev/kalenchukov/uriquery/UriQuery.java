@@ -25,7 +25,8 @@ public final class UriQuery
 	 * @param uriQueryEncode закодированные параметры URI
 	 * @return карту параметров и их значений
 	 */
-	public static @NotNull Map<String, List<String>> parse(@Nullable String uriQueryEncode)
+	@NotNull
+	public static Map<String, List<String>> parse(@Nullable final String uriQueryEncode)
 	{
 		Map<String, List<String>> queryParams = new HashMap<>();
 
@@ -68,7 +69,8 @@ public final class UriQuery
 	 * @param params карта параметров и их значений
 	 * @return закодированные параметры URI
 	 */
-	public static @NotNull String compose(@NotNull Map<String, List<String>> params)
+	@NotNull
+	public static String compose(@NotNull final Map<String, List<String>> params)
 	{
 		StringBuilder uriQuery = new StringBuilder();
 

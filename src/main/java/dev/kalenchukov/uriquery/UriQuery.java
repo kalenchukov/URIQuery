@@ -15,15 +15,18 @@ import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Класс содержит статические методы для сборки / разборки параметров URI.
+ */
 public final class UriQuery
 {
 	private UriQuery() {}
 
 	/**
-	 * Разбирает параметры URI
+	 * Разбирает параметры URI.
 	 *
-	 * @param uriQueryEncode закодированные параметры URI
-	 * @return карту параметров и их значений
+	 * @param uriQueryEncode Закодированные параметры URI.
+	 * @return Коллекцию параметров и их значений.
 	 */
 	@NotNull
 	public static Map<String, List<String>> parse(@Nullable final String uriQueryEncode)
@@ -64,10 +67,10 @@ public final class UriQuery
 	}
 
 	/**
-	 * Собирает параметры URI
+	 * Собирает параметры URI.
 	 *
-	 * @param params карта параметров и их значений
-	 * @return закодированные параметры URI
+	 * @param params Коллекция параметров и их значений.
+	 * @return Строку с закодированными параметрами URI.
 	 */
 	@NotNull
 	public static String compose(@NotNull final Map<String, List<String>> params)

@@ -72,6 +72,8 @@ public final class UriQuery
 	@NotNull
 	public static String compose(@NotNull final Map<String, List<String>> params)
 	{
+		Objects.requireNonNull(params);
+
 		StringBuilder uriQuery = new StringBuilder();
 
 		boolean needSeparator = false;

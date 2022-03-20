@@ -29,7 +29,7 @@ public final class UriQuery
 	 * @return Коллекцию параметров и их значений.
 	 */
 	@NotNull
-	public static Map<String, List<String>> parse(@Nullable final String uriQueryEncode)
+	public static Map<@NotNull String, @NotNull List<@NotNull String>> parse(@Nullable final String uriQueryEncode)
 	{
 		Map<String, List<String>> queryParams = new HashMap<>();
 
@@ -73,7 +73,7 @@ public final class UriQuery
 	 * @return Строку с закодированными параметрами URI.
 	 */
 	@NotNull
-	public static String compose(@NotNull final Map<String, List<String>> params)
+	public static String compose(@NotNull final Map<@NotNull String, @NotNull List<@NotNull String>> params)
 	{
 		Objects.requireNonNull(params);
 

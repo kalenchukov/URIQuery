@@ -4,7 +4,7 @@
  * E-mail: mailto:aleksey.kalenchukov@yandex.ru
  */
 
-package dev.kalenchukov.uriquery.test;
+package dev.kalenchukov.uriquery.tests;
 
 import dev.kalenchukov.uriquery.UriQuery;
 
@@ -12,7 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Main
+public class Test
 {
 	public static void main(String[] args)
 	{

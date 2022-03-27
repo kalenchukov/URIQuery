@@ -31,7 +31,7 @@ public final class UriQuery
 	@NotNull
 	public static Map<@NotNull String, @NotNull List<@NotNull String>> parse(@Nullable final String uriQueryEncode)
 	{
-		Map<String, List<String>> queryParams = new HashMap<>();
+		Map<String, List<String>> queryParams = new LinkedHashMap<>();
 
 		if (uriQueryEncode == null || uriQueryEncode.length() < 3) {
 			return queryParams;

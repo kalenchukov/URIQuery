@@ -13,7 +13,6 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Класс содержит статические методы для сборки / разборки параметров URI.
@@ -25,19 +24,21 @@ public final class UriQuery
 	/**
 	 * Разбирает параметры URI.
 	 *
-	 * @param uriQueryEncode Закодированные параметры URI.
+	 * @param query Закодированные параметры URI.
 	 * @return Коллекцию параметров и их значений.
 	 */
 	@NotNull
-	public static Map<@NotNull String, @NotNull List<@NotNull String>> parse(@Nullable final String uriQueryEncode)
+	public static Map<@NotNull String, @NotNull List<@NotNull String>> parse(@NotNull final String query)
 	{
-		Map<String, List<String>> queryParams = new LinkedHashMap<>();
+		Objects.requireNonNull(query);
 
-		if (uriQueryEncode == null || uriQueryEncode.length() < 3) {
-			return queryParams;
+		Map<String, List<String>> params = new LinkedHashMap<>();
+
+		if (query.length() < 3) {
+			return params;
 		}
 
-		for (String groupParam : uriQueryEncode.split("&"))
+		for (String groupParam : query.split("&"))
 		{
 			Pattern pattern = Pattern.compile("(?<param>[a-z0-9_\\-.+,|:]+(\\[\\])?)=(?<value>.*)", Pattern.CASE_INSENSITIVE);
 			Matcher matcher = pattern.matcher(groupParam);
@@ -53,17 +54,17 @@ public final class UriQuery
 				{
 					paramGroup = paramGroup.replace("[]", "");
 
-					if (queryParams.containsKey(paramGroup)) {
-						queryParamValues = queryParams.get(paramGroup);
+					if (params.containsKey(paramGroup)) {
+						queryParamValues = params.get(paramGroup);
 					}
 				}
 
 				queryParamValues.add(valueGroup);
-				queryParams.put(paramGroup, queryParamValues);
+				params.put(paramGroup, queryParamValues);
 			}
 		}
 
-		return queryParams;
+		return params;
 	}
 
 	/**
@@ -77,35 +78,44 @@ public final class UriQuery
 	{
 		Objects.requireNonNull(params);
 
-		StringBuilder uriQuery = new StringBuilder();
+		StringBuilder query = new StringBuilder();
+
+		if (params.size() == 0) {
+			return query.toString();
+		}
 
 		boolean needSeparator = false;
 
 		for (Map.Entry<String, List<String>> groupParam : params.entrySet())
 		{
+			Objects.requireNonNull(groupParam.getKey());
+			Objects.requireNonNull(groupParam.getValue());
+
 			if (needSeparator) {
-				uriQuery.append("&");
+				query.append("&");
 			}
 
 				for (int elm = 0; elm < groupParam.getValue().size(); elm++)
 				{
+					Objects.requireNonNull(groupParam.getValue().get(elm));
+
 					if (elm > 0) {
-						uriQuery.append("&");
+						query.append("&");
 					}
 
-					uriQuery.append(URLEncoder.encode(groupParam.getKey(), StandardCharsets.UTF_8));
+					query.append(URLEncoder.encode(groupParam.getKey(), StandardCharsets.UTF_8));
 
 					if (groupParam.getValue().size() > 1) {
-						uriQuery.append("[]");
+						query.append("[]");
 					}
 
-					uriQuery.append("=");
-					uriQuery.append(URLEncoder.encode(groupParam.getValue().get(elm), StandardCharsets.UTF_8));
+					query.append("=");
+					query.append(URLEncoder.encode(groupParam.getValue().get(elm), StandardCharsets.UTF_8));
 				}
 
 			needSeparator = true;
 		}
 
-		return uriQuery.toString();
+		return query.toString();
 	}
 }

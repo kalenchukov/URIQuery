@@ -30,7 +30,7 @@ queryString.append("param3[]=value3.2");
 queryString.append("&");
 queryString.append("param4=value4.1");
 
-UriQuery.parse(queryString);
+UriQuery.parse(queryString.toString());
 /*
     Результат выполнения:
     {

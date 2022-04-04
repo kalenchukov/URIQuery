@@ -19,6 +19,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class UriQuery
 {
+	/**
+	 * Конструктор для {@code UriQuery} запрещающий создавать объект класса.
+	 */
 	private UriQuery() {}
 
 	/**

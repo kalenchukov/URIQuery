@@ -13,6 +13,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Класс содержит статические методы для сборки / разборки параметров URI.
@@ -78,7 +79,7 @@ public final class UriQuery
 	 * @return Строку с закодированными параметрами URI.
 	 */
 	@NotNull
-	public static String compose(@NotNull final Map<@NotNull String, @NotNull String @NotNull []> params)
+	public static String compose(@NotNull final Map<@NotNull String, @Nullable String @NotNull []> params)
 	{
 		Objects.requireNonNull(params);
 
@@ -101,8 +102,6 @@ public final class UriQuery
 
 				for (int elm = 0; elm < groupParam.getValue().length; elm++)
 				{
-					Objects.requireNonNull(groupParam.getValue()[elm]);
-
 					if (elm > 0) {
 						query.append("&");
 					}
@@ -114,7 +113,10 @@ public final class UriQuery
 					}
 
 					query.append("=");
-					query.append(URLEncoder.encode(groupParam.getValue()[elm], StandardCharsets.UTF_8));
+
+					if (groupParam.getValue()[elm] != null) {
+						query.append(URLEncoder.encode(groupParam.getValue()[elm], StandardCharsets.UTF_8));
+					}
 				}
 
 			needSeparator = true;

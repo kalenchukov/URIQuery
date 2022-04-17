@@ -33,11 +33,14 @@ public class UriQueryTest
 		QUERY_STRING.append("param3[]=value3.2");
 		QUERY_STRING.append("&");
 		QUERY_STRING.append("param4=value4.1");
+		QUERY_STRING.append("&");
+		QUERY_STRING.append("param5=");
 
 		QUERY_MAP.put("param1", new String[]{"value1.1"});
 		QUERY_MAP.put("param2", new String[]{"значение2.1"});
 		QUERY_MAP.put("param3", new String[]{"value3.1", "value3.2"});
 		QUERY_MAP.put("param4", new String[]{"value4.1"});
+		QUERY_MAP.put("param5", new String[]{null});
 	}
 
 	@After
@@ -104,10 +107,20 @@ public class UriQueryTest
 		{
 			for (int elm = 0; elm < QUERY_MAP.get(entryQueryMap.getKey()).length; elm++)
 			{
-				assertEquals(
-					QUERY_MAP.get(entryQueryMap.getKey())[elm],
-					queryMap.get(entryQueryMap.getKey())[elm]
-				);
+				if (QUERY_MAP.get(entryQueryMap.getKey())[elm] == null)
+				{
+					assertEquals(
+						"",
+						queryMap.get(entryQueryMap.getKey())[elm]
+					);
+				}
+				else
+				{
+					assertEquals(
+						QUERY_MAP.get(entryQueryMap.getKey())[elm],
+						queryMap.get(entryQueryMap.getKey())[elm]
+					);
+				}
 			}
 		}
 	}

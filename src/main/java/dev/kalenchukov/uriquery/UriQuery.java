@@ -31,11 +31,11 @@ public final class UriQuery
 	 * @return Коллекцию параметров и их значений.
 	 */
 	@NotNull
-	public static Map<@NotNull String, @NotNull List<@NotNull String>> parse(@NotNull final String query)
+	public static Map<@NotNull String, @NotNull String @NotNull []> parse(@NotNull final String query)
 	{
 		Objects.requireNonNull(query);
 
-		Map<String, List<String>> params = new LinkedHashMap<>();
+		Map<String, String[]> params = new LinkedHashMap<>();
 
 		if (query.length() < 3) {
 			return params;
@@ -48,22 +48,23 @@ public final class UriQuery
 
 			if (matcher.matches())
 			{
-				String paramGroup = matcher.group("param").toLowerCase();
-				String valueGroup = URLDecoder.decode(matcher.group("value"), StandardCharsets.UTF_8);
+				String name = matcher.group("param").toLowerCase();
+				String value = URLDecoder.decode(matcher.group("value"), StandardCharsets.UTF_8);
 
-				List<String> queryParamValues = new ArrayList<>();
+				List<String> values = new ArrayList<>();
 
-				if (paramGroup.contains("[]"))
+				if (name.endsWith("[]"))
 				{
-					paramGroup = paramGroup.replace("[]", "");
+					name = name.replace("[]", "");
 
-					if (params.containsKey(paramGroup)) {
-						queryParamValues = params.get(paramGroup);
+					if (params.containsKey(name)) {
+						values.addAll(Arrays.asList(params.get(name)));
 					}
 				}
 
-				queryParamValues.add(valueGroup);
-				params.put(paramGroup, queryParamValues);
+				values.add(value);
+
+				params.put(name, values.toArray(String[]::new));
 			}
 		}
 
@@ -77,7 +78,7 @@ public final class UriQuery
 	 * @return Строку с закодированными параметрами URI.
 	 */
 	@NotNull
-	public static String compose(@NotNull final Map<@NotNull String, @NotNull List<@NotNull String>> params)
+	public static String compose(@NotNull final Map<@NotNull String, @NotNull String @NotNull []> params)
 	{
 		Objects.requireNonNull(params);
 
@@ -89,7 +90,7 @@ public final class UriQuery
 
 		boolean needSeparator = false;
 
-		for (Map.Entry<String, List<String>> groupParam : params.entrySet())
+		for (Map.Entry<String, String[]> groupParam : params.entrySet())
 		{
 			Objects.requireNonNull(groupParam.getKey());
 			Objects.requireNonNull(groupParam.getValue());
@@ -98,9 +99,9 @@ public final class UriQuery
 				query.append("&");
 			}
 
-				for (int elm = 0; elm < groupParam.getValue().size(); elm++)
+				for (int elm = 0; elm < groupParam.getValue().length; elm++)
 				{
-					Objects.requireNonNull(groupParam.getValue().get(elm));
+					Objects.requireNonNull(groupParam.getValue()[elm]);
 
 					if (elm > 0) {
 						query.append("&");
@@ -108,12 +109,12 @@ public final class UriQuery
 
 					query.append(URLEncoder.encode(groupParam.getKey(), StandardCharsets.UTF_8));
 
-					if (groupParam.getValue().size() > 1) {
+					if (groupParam.getValue().length > 1) {
 						query.append("[]");
 					}
 
 					query.append("=");
-					query.append(URLEncoder.encode(groupParam.getValue().get(elm), StandardCharsets.UTF_8));
+					query.append(URLEncoder.encode(groupParam.getValue()[elm], StandardCharsets.UTF_8));
 				}
 
 			needSeparator = true;

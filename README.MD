@@ -4,11 +4,11 @@
 # Использование
 ### Сборщик параметров
 ```java
-Map<String, List<String>> queryMap = new LinkedHashMap<>();
-queryMap.put("param1", List.of("value1.1"));
-queryMap.put("param2", List.of("значение2.1"));
-queryMap.put("param3", List.of("value3.1", "value3.2"));
-queryMap.put("param4", List.of("value4.1"));
+Map<String, String[]> queryMap = new LinkedHashMap<>();
+queryMap.put("param1", new String[]{"value1.1"});
+queryMap.put("param2", new String[]{"значение2.1"});
+queryMap.put("param3", new String[]{"value3.1", "value3.2"});
+queryMap.put("param4", new String[]{"value4.1"});
 
 UriQuery.compose(queryMap);
 /*

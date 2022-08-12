@@ -6,8 +6,7 @@
 
 package dev.kalenchukov.uriquery;
 
-import java.net.URLDecoder;
-import java.net.URLEncoder;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -28,17 +27,19 @@ public final class UriQuery
 	/**
 	 * Разбирает параметры URI.
 	 *
-	 * @param query Закодированные параметры URI.
+	 * @param uri URI.
 	 * @return Коллекцию параметров и их значений.
 	 */
 	@NotNull
-	public static Map<@NotNull String, @NotNull String @NotNull []> parse(@NotNull final String query)
+	public static Map<@NotNull String, @NotNull String @NotNull []> parse(@NotNull final URI uri)
 	{
-		Objects.requireNonNull(query);
+		Objects.requireNonNull(uri);
 
-		Map<String, String[]> params = new LinkedHashMap<>();
+		final String query = uri.getRawQuery();
 
-		if (query.length() < 3) {
+		final Map<String, String[]> params = new LinkedHashMap<>();
+
+		if (query == null || query.isEmpty()) {
 			return params;
 		}
 
@@ -83,9 +84,9 @@ public final class UriQuery
 	{
 		Objects.requireNonNull(params);
 
-		StringBuilder query = new StringBuilder();
+		final StringBuilder query = new StringBuilder();
 
-		if (params.size() == 0) {
+		if (params.isEmpty()) {
 			return query.toString();
 		}
 

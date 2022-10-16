@@ -38,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
 public final class UriQuery
 {
 	/**
-	 * Конструктор для {@code UriQuery} запрещающий создавать объект класса.
+	 * Конструктор для {@code UriQuery}.
 	 */
 	private UriQuery() {}
 
